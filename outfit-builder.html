@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabiora - Outfit Builder</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .code-display {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            gap: 20px;
+            padding: 20px;
+            min-height: calc(100vh - 80px);
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow-y: auto;
+            max-height: calc(100vh - 120px);
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .category-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .category-btn {
+            padding: 8px 15px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .category-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .product-card {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .product-emoji {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .product-brand {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .match-score {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .match-high {
+            background: #e7f5e8;
+            color: #2d8f3c;
+        }
+
+        .match-medium {
+            background: #fff4e6;
+            color: #f57c00;
+        }
+
+        .shop-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .shop-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .canvas-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .canvas-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+        }
+
+        .control-btn.secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .canvas {
+            flex: 1;
+            background: white;
+            border: 2px dashed #e0e0e0;
+            border-radius: 12px;
+            min-height: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .canvas-item {
+            position: absolute;
+            cursor: move;
+            font-size: 3em;
+            user-select: none;
+            transition: opacity 0.2s;
+        }
+
+        .canvas-item:hover {
+            opacity: 0.8;
+        }
+
+        .empty-canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #999;
+        }
+
+        .recommendation-card {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .recommendation-header {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .outfit-preview {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .outfit-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 2em;
+            border: 1px solid #e0e0e0;
+        }
+
+        .load-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .load-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                max-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🎨 Fabiora Outfit Builder</div>
+        <div class="code-display" id="user-code">Loading...</div>
+    </div>
+
+    <div class="main-container">
+        <!-- Left Sidebar: Product Catalog -->
+        <div class="sidebar">
+            <h2>🛍️ Product Catalog</h2>
+            
+            <input type="text" class="search-box" id="search-box" placeholder="Search products..." oninput="filterProducts()">
+            
+            <div class="category-filter">
+                <button class="category-btn active" onclick="filterByCategory('all')">All</button>
+                <button class="category-btn" onclick="filterByCategory('tops')">Tops</button>
+                <button class="category-btn" onclick="filterByCategory('bottoms')">Bottoms</button>
+                <button class="category-btn" onclick="filterByCategory('shoes')">Shoes</button>
+                <button class="category-btn" onclick="filterByCategory('accessories')">Accessories</button>
+            </div>
+
+            <div id="product-list"></div>
+        </div>
+
+        <!-- Center: Outfit Canvas -->
+        <div class="canvas-container">
+            <div class="canvas-controls">
+                <button class="control-btn" onclick="clearCanvas()">🗑️ Clear All</button>
+                <button class="control-btn secondary" onclick="saveOutfit()">💾 Save Outfit</button>
+                <input type="color" id="bg-color" value="#ffffff" onchange="changeBackground(this.value)" title="Change background color">
+            </div>
+
+            <div class="canvas" id="canvas">
+                <div class="empty-canvas" id="empty-message">
+                    <div style="font-size: 3em; margin-bottom: 10px;">👔</div>
+                    <div style="font-size: 1.2em;">Click products to add them here</div>
+                    <div style="font-size: 0.9em; color: #aaa; margin-top: 10px;">Drag items to arrange your outfit</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar: AI Recommendations -->
+        <div class="sidebar">
+            <h2>✨ AI Recommendations</h2>
+            <button class="control-btn" style="width: 100%; margin-bottom: 20px;" onclick="generateRecommendations()">
+                🤖 Generate Outfits
+            </button>
+            <div id="recommendations-list"></div>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            { id: 1, name: 'Classic Navy Blazer', brand: 'J.Crew', price: 198, category: 'tops', emoji: '🧥', link: 'https://example.com', scores: { security: 90, expression: 28, comfort: 65, control: 85, connection: 50, adventure: 25 } },
+            { id: 2, name: 'Bold Floral Dress', brand: 'Anthropologie', price: 168, category: 'tops', emoji: '👗', link: 'https://example.com', scores: { security: 35, expression: 95, comfort: 75, control: 40, connection: 60, adventure: 70 } },
+            { id: 3, name: 'Soft Cashmere Sweater', brand: 'Everlane', price: 120, category: 'tops', emoji: '🧶', link: 'https://example.com', scores: { security: 70, expression: 40, comfort: 95, control: 60, connection: 55, adventure: 30 } },
+            { id: 4, name: 'Black Skinny Jeans', brand: 'Levi\'s', price: 89, category: 'bottoms', emoji: '👖', link: 'https://example.com', scores: { security: 85, expression: 50, comfort: 70, control: 75, connection: 55, adventure: 40 } },
+            { id: 5, name: 'Flowy Midi Skirt', brand: 'Zara', price: 79, category: 'bottoms', emoji: '👗', link: 'https://example.com', scores: { security: 60, expression: 70, comfort: 85, control: 50, connection: 65, adventure: 55 } },
+            { id: 6, name: 'Classic White Sneakers', brand: 'Adidas', price: 95, category: 'shoes', emoji: '👟', link: 'https://example.com', scores: { security: 88, expression: 45, comfort: 90, control: 70, connection: 60, adventure: 35 } },
+            { id: 7, name: 'Statement Heels', brand: 'Steve Madden', price: 129, category: 'shoes', emoji: '👠', link: 'https://example.com', scores: { security: 55, expression: 90, comfort: 40, control: 60, connection: 70, adventure: 65 } },
+            { id: 8, name: 'Leather Tote Bag', brand: 'Coach', price: 295, category: 'accessories', emoji: '👜', link: 'https://example.com', scores: { security: 85, expression: 55, comfort: 70, control: 80, connection: 50, adventure: 35 } },
+            { id: 9, name: 'Bold Sunglasses', brand: 'Ray-Ban', price: 180, category: 'accessories', emoji: '🕶️', link: 'https://example.com', scores: { security: 60, expression: 88, comfort: 70, control: 55, connection: 65, adventure: 75 } },
+            { id: 10, name: 'Silk Scarf', brand: 'Hermès', price: 395, category: 'accessories', emoji: '🧣', link: 'https://example.com', scores: { security: 78, expression: 82, comfort: 85, control: 70, connection: 60, adventure: 55 } }
+        ];
+
+        let userProfile = null;
+        let canvasItems = [];
+        let currentCategory = 'all';
+
+        function init() {
+            const saved = localStorage.getItem('fabioraProfile');
+            if (saved) {
+                userProfile = JSON.parse(saved);
+                document.getElementById('user-code').textContent = userProfile.code;
+            } else {
+                document.getElementById('user-code').textContent = 'No Profile - Take Quiz First';
+            }
+
+            renderProducts();
+        }
+
+        function calculateMatchScore(product) {
+            if (!userProfile) return 75;
+            
+            const weights = {
+                security: 0.2,
+                expression: 0.2,
+                comfort: 0.15,
+                control: 0.15,
+                connection: 0.15,
+                adventure: 0.15
+            };
+
+            let totalScore = 0;
+            Object.keys(weights).forEach(dimension => {
+                const userScore = userProfile.scores[dimension];
+                const itemScore = product.scores[dimension];
+                const difference = Math.abs(userScore - itemScore);
+                const similarity = 100 - difference;
+                totalScore += similarity * weights[dimension];
+            });
+
+            return Math.round(totalScore);
+        }
+
+        function renderProducts() {
+            const container = document.getElementById('product-list');
+            container.innerHTML = '';
+
+            const filtered = products.filter(p => 
+                currentCategory === 'all' || p.category === currentCategory
+            );
+
+            filtered.forEach(product => {
+                const matchScore = calculateMatchScore(product);
+                const matchClass = matchScore > 80 ? 'match-high' : 'match-medium';
+
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-emoji">${product.emoji}</div>
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-brand">${product.brand}</div>
+                    <div class="product-price">$${product.price}</div>
+                    <div class="match-score ${matchClass}">${matchScore}% Match</div>
+                    <a href="${product.link}" class="shop-btn" target="_blank" onclick="event.stopPropagation()">
+                        🛒 Shop Now
+                    </a>
+                `;
+
+                card.onclick = (e) => {
+                    if (!e.target.classList.contains('shop-btn')) {
+                        addToCanvas(product);
+                    }
+                };
+
+                container.appendChild(card);
+            });
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderProducts();
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('search-box').value.toLowerCase();
+            const filtered = products.filter(p => 
+                (currentCategory === 'all' || p.category === currentCategory) &&
+                (p.name.toLowerCase().includes(query) || p.brand.toLowerCase().includes(query))
+            );
+            // Re-render with filtered products
+            renderProducts();
+        }
+
+        function addToCanvas(product) {
+            const item = {
+                id: Date.now(),
+                product: product,
+                x: Math.random() * 400 + 100,
+                y: Math.random() * 400 + 100
+            };
+            canvasItems.push(item);
+            renderCanvas();
+        }
+
+        function renderCanvas() {
+            const canvas = document.getElementById('canvas');
+            const empty = document.getElementById('empty-message');
+            
+            if (canvasItems.length === 0) {
+                if (empty) empty.style.display = 'block';
+                return;
+            }
+            
+            if (empty) empty.style.display = 'none';
+
+            canvas.querySelectorAll('.canvas-item').forEach(el => el.remove());
+
+            canvasItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'canvas-item';
+                div.style.left = item.x + 'px';
+                div.style.top = item.y + 'px';
+                div.textContent = item.product.emoji;
+                div.title = item.product.name;
+                
+                let isDragging = false;
+                let startX, startY;
+                
+                div.onmousedown = (e) => {
+                    isDragging = true;
+                    startX = e.clientX - item.x;
+                    startY = e.clientY - item.y;
+                    div.style.zIndex = 1000;
+                };
+
+                document.onmousemove = (e) => {
+                    if (!isDragging) return;
+                    item.x = e.clientX - startX;
+                    item.y = e.clientY - startY;
+                    div.style.left = item.x + 'px';
+                    div.style.top = item.y + 'px';
+                };
+
+                document.onmouseup = () => {
+                    isDragging = false;
+                };
+
+                canvas.appendChild(div);
+            });
+        }
+
+        function clearCanvas() {
+            if (confirm('Clear all items from canvas?')) {
+                canvasItems = [];
+                renderCanvas();
+            }
+        }
+
+        function changeBackground(color) {
+            document.getElementById('canvas').style.background = color;
+        }
+
+        function saveOutfit() {
+            if (canvasItems.length === 0) {
+                alert('Add some items to your canvas first!');
+                return;
+            }
+            
+            const outfit = {
+                items: canvasItems.map(item => item.product.id),
+                savedAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('fabioraSavedOutfit', JSON.stringify(outfit));
+            alert('✅ Outfit saved! You can load it anytime.');
+        }
+
+        function generateRecommendations() {
+            const container = document.getElementById('recommendations-list');
+            container.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">🤖 Generating AI recommendations...</div>';
+
+            setTimeout(() => {
+                const sorted = [...products].sort((a, b) => 
+                    calculateMatchScore(b) - calculateMatchScore(a)
+                );
+
+                const recommendations = [
+                    {
+                        name: 'Perfect Match Outfit',
+                        items: [sorted[0], sorted[3], sorted[5], sorted[7]],
+                        score: 95
+                    },
+                    {
+                        name: 'Alternative Style',
+                        items: [sorted[1], sorted[4], sorted[6], sorted[8]],
+                        score: 88
+                    }
+                ];
+
+                container.innerHTML = '';
+                recommendations.forEach(rec => {
+                    const card = document.createElement('div');
+                    card.className = 'recommendation-card';
+                    
+                    const itemsHtml = rec.items.map(item => 
+                        `<div class="outfit-item">${item.emoji}</div>`
+                    ).join('');
+                    
+                    card.innerHTML = `
+                        <div class="recommendation-header">${rec.name} (${rec.score}% Match)</div>
+                        <div class="outfit-preview">${itemsHtml}</div>
+                        <button class="load-btn" onclick='loadOutfit(${JSON.stringify(rec.items.map(i => i.id))})'>
+                            Load to Canvas
+                        </button>
+                    `;
+                    container.appendChild(card);
+                });
+            }, 1500);
+        }
+
+        function loadOutfit(productIds) {
+            clearCanvas();
+            productIds.forEach((id, index) => {
+                const product = products.find(p => p.id === id);
+                if (product) {
+                    const item = {
+                        id: Date.now() + index,
+                        product: product,
+                        x: 150 + (index % 2) * 200,
+                        y: 150 + Math.floor(index / 2) * 150
+                    };
+                    canvasItems.push(item);
+                }
+            });
+            renderCanvas();
+        }
+
+        init();
+    </script>
+</body>
+</html>
+```
+
+---
+
+### **STEP 3: Save the File (30 sec)**
+
+1. Scroll down
+2. Click green **"Commit changes"** button
+3. Click **"Commit changes"** again in the popup
+
+---
+
+### **STEP 4: Wait 1 Minute, Then Test (1 min)**
+
+Your outfit builder will be live at:
+```
+https://nathanieltebandeke.github.io/fabiora/outfit-builder.html
+```
+
+**Open that link in a new tab to see it!**
+
+---
+
+## 🔗 UPDATE YOUR QUESTIONNAIRE LINK
+
+Now go back and add a link from questionnaire to outfit builder:
+
+1. Click "Code" tab
+2. Click on `index.html`
+3. Click the pencil icon (edit)
+4. Find this line (around line 88): `<a href="YOUR_OUTFIT_BUILDER_LINK"`
+5. Replace it with: `<a href="outfit-builder.html"`
+6. Commit changes
+
+**Now the questionnaire links to the outfit builder!**
+
+---
+
+## 📱 YOUR TWO LIVE LINKS:
+
+**Questionnaire:**
+```
+https://nathanieltebandeke.github.io/fabiora/
+```
+
+**Outfit Builder:**
+```
+https://nathanieltebandeke.github.io/fabiora/outfit-builder.html
