@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabiora - Discover Your Design DNA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .question-text {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 25px;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        button {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .emotion-code {
+            text-align: center;
+            margin: 30px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .code {
+            font-size: 2.5em;
+            font-weight: bold;
+            letter-spacing: 3px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+
+        .copy-btn, .share-btn {
+            margin: 10px 5px;
+            background: white;
+            color: #667eea;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .copy-btn:hover, .share-btn:hover {
+            background: #f0f4ff;
+        }
+
+        .emotion-row {
+            margin-bottom: 20px;
+        }
+
+        .emotion-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .emotion-bar {
+            width: 100%;
+            height: 35px;
+            background: #e0e0e0;
+            border-radius: 17px;
+            overflow: hidden;
+        }
+
+        .emotion-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .cta-button {
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            text-align: center;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 1.3em;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .social-share {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .social-btn {
+            display: inline-block;
+            margin: 5px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .social-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .twitter { background: #1DA1F2; }
+        .facebook { background: #4267B2; }
+        .whatsapp { background: #25D366; }
+
+        @media (max-width: 768px) {
+            .container { 
+                padding: 20px; 
+            }
+            h1 { 
+                font-size: 1.8em; 
+            }
+            .question-text {
+                font-size: 1.1em;
+            }
+            .code { 
+                font-size: 1.5em; 
+                letter-spacing: 1px;
+            }
+            .navigation {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="questionnaire">
+            <h1>🎨 Discover Your Design DNA</h1>
+            <p class="subtitle">Answer 5 questions to unlock your emotion profile</p>
+            
+            <div class="progress-container">
+                <div class="progress-text">Question <span id="current-q">1</span> of 5</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 20%"></div>
+                </div>
+            </div>
+
+            <div class="question-text" id="question-text"></div>
+            <div class="options" id="options"></div>
+
+            <div class="navigation">
+                <button class="btn-secondary" id="prev-btn" onclick="previousQuestion()">← Previous</button>
+                <button class="btn-primary" id="next-btn" onclick="nextQuestion()" disabled>Next →</button>
+            </div>
+        </div>
+
+        <div class="results" id="results">
+            <h1>✨ Your Emotion Profile</h1>
+            <p class="subtitle">Your unique design DNA revealed</p>
+
+            <div class="emotion-code">
+                <h2>Your Fabiora Code</h2>
+                <div class="code" id="emotion-code"></div>
+                <button class="copy-btn" onclick="copyCode()">📋 Copy Code</button>
+                <button class="share-btn" onclick="shareResults()">📱 Share</button>
+            </div>
+
+            <div class="social-share">
+                <p style="margin-bottom: 10px; color: #666;">Share your results:</p>
+                <a href="#" class="social-btn twitter" id="twitter-share" target="_blank">🐦 Twitter</a>
+                <a href="#" class="social-btn facebook" id="facebook-share" target="_blank">👍 Facebook</a>
+                <a href="#" class="social-btn whatsapp" id="whatsapp-share" target="_blank">💬 WhatsApp</a>
+            </div>
+
+            <div id="emotion-chart"></div>
+
+            <a href="outfit-builder.html" class="cta-button">
+                👔 Continue to Outfit Builder →
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                text: "When making a major purchase decision, I tend to...",
+                options: [
+                    { text: "Research extensively and choose proven, trusted brands", scores: { security: 15, control: 5 } },
+                    { text: "Choose something bold that reflects my unique style", scores: { expression: 15, adventure: 5 } },
+                    { text: "Prioritize how comfortable and easy it will be to use", scores: { comfort: 15, security: 3 } },
+                    { text: "Make a detailed comparison and organized decision", scores: { control: 15, security: 5 } },
+                    { text: "Ask friends and family for their recommendations", scores: { connection: 15, security: 3 } },
+                    { text: "Try something new and exciting I haven't used before", scores: { adventure: 15, expression: 5 } }
+                ]
+            },
+            {
+                id: 2,
+                text: "My ideal living space would be described as...",
+                options: [
+                    { text: "Classic, timeless, with quality traditional pieces", scores: { security: 15, control: 5 } },
+                    { text: "Unique, eye-catching, reflects my personality", scores: { expression: 15, adventure: 5 } },
+                    { text: "Cozy, soft, warm, and inviting", scores: { comfort: 15, connection: 5 } },
+                    { text: "Organized, minimalist, everything has a place", scores: { control: 15, security: 5 } },
+                    { text: "Welcoming for guests, designed for socializing", scores: { connection: 15, expression: 5 } },
+                    { text: "Eclectic, filled with souvenirs and interesting finds", scores: { adventure: 15, expression: 5 } }
+                ]
+            },
+            {
+                id: 3,
+                text: "When getting dressed in the morning, I choose clothes that...",
+                options: [
+                    { text: "Are reliable favorites I know work well", scores: { security: 15, comfort: 5 } },
+                    { text: "Make a statement and help me stand out", scores: { expression: 15, adventure: 5 } },
+                    { text: "Feel comfortable and easy to wear all day", scores: { comfort: 15, security: 3 } },
+                    { text: "Are well-organized in my closet and match easily", scores: { control: 15, security: 5 } },
+                    { text: "Make me feel confident around others", scores: { connection: 12, expression: 8 } },
+                    { text: "Are something new or different I haven't worn much", scores: { adventure: 15, expression: 5 } }
+                ]
+            },
+            {
+                id: 4,
+                text: "At a restaurant, I typically order...",
+                options: [
+                    { text: "My usual favorite dish or something I've had before", scores: { security: 15, comfort: 5 } },
+                    { text: "The most unique or interesting item on the menu", scores: { expression: 12, adventure: 8 } },
+                    { text: "Comfort food that I know I'll enjoy", scores: { comfort: 15, security: 5 } },
+                    { text: "After carefully reviewing all options", scores: { control: 15, security: 5 } },
+                    { text: "What others recommend or share", scores: { connection: 15, security: 3 } },
+                    { text: "Something I've never tried before", scores: { adventure: 15, expression: 5 } }
+                ]
+            },
+            {
+                id: 5,
+                text: "My approach to trying new activities is...",
+                options: [
+                    { text: "I prefer activities I know I'm good at", scores: { security: 15, control: 5 } },
+                    { text: "I like activities where I can express myself", scores: { expression: 15, connection: 3 } },
+                    { text: "I choose activities that are relaxing and enjoyable", scores: { comfort: 15, security: 3 } },
+                    { text: "I plan activities carefully and set clear goals", scores: { control: 15, security: 5 } },
+                    { text: "I prefer group activities with friends", scores: { connection: 15, comfort: 5 } },
+                    { text: "I love trying new and challenging activities", scores: { adventure: 15, expression: 5 } }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = {};
+        let scores = { security: 0, expression: 0, comfort: 0, control: 0, connection: 0, adventure: 0 };
+
+        function renderQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question-text').textContent = question.text;
+            document.getElementById('current-q').textContent = currentQuestion + 1;
+            
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                if (answers[currentQuestion] === index) {
+                    optionDiv.classList.add('selected');
+                }
+                optionDiv.textContent = option.text;
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').textContent = 
+                currentQuestion === questions.length - 1 ? 'See Results ✨' : 'Next →';
+        }
+
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+            renderQuestion();
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+                document.getElementById('next-btn').disabled = answers[currentQuestion] === undefined;
+            } else {
+                calculateResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+                document.getElementById('next-btn').disabled = false;
+            }
+        }
+
+        function calculateResults() {
+            Object.keys(answers).forEach(questionIndex => {
+                const question = questions[questionIndex];
+                const selectedOption = question.options[answers[questionIndex]];
+                
+                Object.keys(selectedOption.scores).forEach(dimension => {
+                    scores[dimension] += selectedOption.scores[dimension];
+                });
+            });
+
+            const maxScore = questions.length * 15;
+            Object.keys(scores).forEach(dimension => {
+                scores[dimension] = Math.round((scores[dimension] / maxScore) * 100);
+            });
+
+            const code = generateCode();
+            
+            localStorage.setItem('fabioraProfile', JSON.stringify({
+                code,
+                scores,
+                completedAt: new Date().toISOString()
+            }));
+
+            showResults(code);
+        }
+
+        function generateCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let part1 = '', part2 = '';
+            for (let i = 0; i < 4; i++) {
+                part1 += chars.charAt(Math.floor(Math.random() * chars.length));
+                part2 += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return `FBR-${part1}-${part2}`;
+        }
+
+        function showResults(code) {
+            document.getElementById('questionnaire').style.display = 'none';
+            document.getElementById('results').classList.add('show');
+            document.getElementById('emotion-code').textContent = code;
+
+            const dimensions = [
+                { name: 'Security', key: 'security', desc: 'Need for proven, reliable choices' },
+                { name: 'Expression', key: 'expression', desc: 'Need to stand out and be unique' },
+                { name: 'Comfort', key: 'comfort', desc: 'Need for physical & emotional ease' },
+                { name: 'Control', key: 'control', desc: 'Need for organization & predictability' },
+                { name: 'Connection', key: 'connection', desc: 'Need for relationships & belonging' },
+                { name: 'Adventure', key: 'adventure', desc: 'Need for novelty & exploration' }
+            ];
+
+            const chartContainer = document.getElementById('emotion-chart');
+            dimensions.forEach(dimension => {
+                const score = scores[dimension.key];
+                const row = document.createElement('div');
+                row.className = 'emotion-row';
+                row.innerHTML = `
+                    <div class="emotion-label">
+                        <span>${dimension.name}</span>
+                        <span>${score}/100</span>
+                    </div>
+                    <div class="emotion-bar">
+                        <div class="emotion-bar-fill" style="width: ${score}%">${score}</div>
+                    </div>
+                `;
+                chartContainer.appendChild(row);
+            });
+
+            setupSocialSharing(code);
+        }
+
+        function setupSocialSharing(code) {
+            const url = window.location.href;
+            const text = `I just discovered my Fabiora emotion profile! My code is ${code}. Take the quiz to find yours!`;
+            
+            document.getElementById('twitter-share').href = 
+                `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+            
+            document.getElementById('facebook-share').href = 
+                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+            
+            document.getElementById('whatsapp-share').href = 
+                `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
+        }
+
+        function copyCode() {
+            const code = document.getElementById('emotion-code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('✅ Code copied to clipboard! Share it with your friends!');
+            });
+        }
+
+        function shareResults() {
+            const code = document.getElementById('emotion-code').textContent;
+            const text = `I just discovered my Fabiora emotion profile! My code is ${code}.`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Fabiora Profile',
+                    text: text,
+                    url: window.location.href
+                });
+            } else {
+                copyCode();
+            }
+        }
+
+        renderQuestion();
+    </script>
+</body>
+</html>
