@@ -5,184 +5,494 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fabiora - Discover Your Design DNA</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 
+                0 30px 90px rgba(0,0,0,0.2),
+                0 0 0 1px rgba(255,255,255,0.3) inset;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.6s ease-out;
         }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         h1 {
-            color: #333;
+            color: #1a1a1a;
             text-align: center;
-            margin-bottom: 10px;
-            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-size: 3em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+
         .subtitle {
             text-align: center;
             color: #666;
-            margin-bottom: 30px;
-            font-size: 1.1em;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+            font-weight: 400;
         }
+
+        .progress-container {
+            margin-bottom: 40px;
+        }
+
         .progress-text {
             text-align: center;
             color: #667eea;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-weight: 600;
+            margin-bottom: 15px;
             font-size: 1.1em;
+            letter-spacing: 0.5px;
         }
+
         .progress-bar {
             width: 100%;
-            height: 12px;
-            background: #e0e0e0;
-            border-radius: 6px;
+            height: 8px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
             overflow: hidden;
-            margin-bottom: 30px;
+            position: relative;
         }
+
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.3s ease;
+            border-radius: 10px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
         .question-text {
-            font-size: 1.4em;
-            color: #333;
-            margin-bottom: 25px;
-            font-weight: 500;
+            font-size: 1.5em;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+            font-weight: 600;
+            line-height: 1.6;
+            text-align: center;
         }
+
         .options {
             display: grid;
             gap: 15px;
             margin-bottom: 30px;
         }
+
         .option {
-            padding: 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
+            padding: 25px 30px;
+            border: 2px solid #e8e8e8;
+            border-radius: 16px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             background: white;
+            position: relative;
+            overflow: hidden;
         }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .option:hover::before {
+            left: 100%;
+        }
+
         .option:hover {
             border-color: #667eea;
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
         }
+
         .option.selected {
             border-color: #667eea;
-            background: #f0f4ff;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
         }
+
+        .option-text {
+            color: #333;
+            font-size: 1.05em;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
         .navigation {
             display: flex;
             justify-content: space-between;
-            gap: 15px;
+            margin-top: 40px;
+            gap: 20px;
         }
+
         button {
-            padding: 15px 40px;
+            padding: 18px 45px;
             border: none;
-            border-radius: 10px;
+            border-radius: 14px;
             font-size: 1.1em;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             flex: 1;
+            position: relative;
+            overflow: hidden;
         }
+
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
         .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
         }
+
         .btn-primary:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
+
         .btn-secondary {
-            background: #f0f0f0;
+            background: rgba(0,0,0,0.05);
             color: #333;
+            border: 2px solid rgba(0,0,0,0.1);
         }
+
+        .btn-secondary:hover {
+            background: rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
         .results {
             display: none;
         }
+
         .results.show {
             display: block;
+            animation: fadeIn 0.6s ease-out;
         }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
         .emotion-code {
             text-align: center;
-            margin: 30px 0;
-            padding: 30px;
+            margin: 40px 0;
+            padding: 40px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 15px;
+            border-radius: 20px;
             color: white;
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
         }
+
+        .emotion-code::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .emotion-code h2 {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+        }
+
         .code {
-            font-size: 2.5em;
+            position: relative;
+            z-index: 1;
+            font-size: 3em;
             font-weight: bold;
-            letter-spacing: 3px;
+            letter-spacing: 5px;
             font-family: 'Courier New', monospace;
-            margin: 15px 0;
+            margin: 20px 0;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        .copy-btn {
+
+        .copy-btn, .share-btn {
+            position: relative;
+            z-index: 1;
+            margin: 10px 8px;
             background: white;
             color: #667eea;
-            padding: 12px 30px;
-            border-radius: 8px;
-            margin: 10px;
+            padding: 14px 35px;
+            border-radius: 10px;
+            font-size: 1em;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
+
+        .copy-btn:hover, .share-btn:hover {
+            background: #f0f4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
         .emotion-row {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            animation: slideIn 0.5s ease-out backwards;
         }
+
+        .emotion-row:nth-child(1) { animation-delay: 0.1s; }
+        .emotion-row:nth-child(2) { animation-delay: 0.2s; }
+        .emotion-row:nth-child(3) { animation-delay: 0.3s; }
+        .emotion-row:nth-child(4) { animation-delay: 0.4s; }
+        .emotion-row:nth-child(5) { animation-delay: 0.5s; }
+        .emotion-row:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         .emotion-label {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 600;
-            color: #333;
+            color: #1a1a1a;
+            font-size: 1.1em;
         }
+
         .emotion-bar {
             width: 100%;
-            height: 35px;
-            background: #e0e0e0;
-            border-radius: 17px;
+            height: 40px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 20px;
             overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05) inset;
         }
+
         .emotion-bar-fill {
             height: 100%;
             background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            transition: width 1s ease;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding-right: 15px;
+            padding-right: 20px;
             color: white;
             font-weight: bold;
+            font-size: 1.1em;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
+
+        .cta-button {
+            display: block;
+            width: 100%;
+            margin-top: 40px;
+            padding: 25px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            text-align: center;
+            border-radius: 16px;
+            text-decoration: none;
+            font-size: 1.4em;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 20px 45px rgba(16, 185, 129, 0.4);
+        }
+
+        .social-share {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .social-btn {
+            display: inline-block;
+            margin: 8px;
+            padding: 14px 30px;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .twitter { background: linear-gradient(135deg, #1DA1F2 0%, #0d8bd9 100%); }
+        .facebook { background: linear-gradient(135deg, #4267B2 0%, #365899 100%); }
+        .whatsapp { background: linear-gradient(135deg, #25D366 0%, #1ebe57 100%); }
+
         @media (max-width: 768px) {
-            .container { padding: 20px; }
-            h1 { font-size: 1.8em; }
-            .code { font-size: 1.5em; }
+            .container { 
+                padding: 30px 25px;
+                border-radius: 20px;
+            }
+            h1 { 
+                font-size: 2.2em; 
+            }
+            .question-text {
+                font-size: 1.2em;
+            }
+            .code { 
+                font-size: 1.8em; 
+                letter-spacing: 2px;
+            }
+            .navigation {
+                flex-direction: column;
+            }
+            button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div id="questionnaire">
-            <h1>🎨 Discover Your Design DNA</h1>
-            <p class="subtitle">Answer 5 questions to unlock your emotion profile</p>
+            <h1>✨ Discover Your Design DNA</h1>
+            <p class="subtitle">Answer 5 questions to unlock your unique emotion profile</p>
             
-            <div class="progress-text">Question <span id="current-q">1</span> of 5</div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill" style="width: 20%"></div>
+            <div class="progress-container">
+                <div class="progress-text">Question <span id="current-q">1</span> of 5</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 20%"></div>
+                </div>
             </div>
 
             <div class="question-text" id="question-text"></div>
@@ -195,16 +505,28 @@
         </div>
 
         <div class="results" id="results">
-            <h1>✨ Your Emotion Profile</h1>
-            <p class="subtitle">Your unique design DNA</p>
+            <h1>🎉 Your Emotion Profile</h1>
+            <p class="subtitle">Your unique design DNA revealed</p>
 
             <div class="emotion-code">
                 <h2>Your Fabiora Code</h2>
                 <div class="code" id="emotion-code"></div>
                 <button class="copy-btn" onclick="copyCode()">📋 Copy Code</button>
+                <button class="share-btn" onclick="shareResults()">📱 Share</button>
+            </div>
+
+            <div class="social-share">
+                <p style="margin-bottom: 15px; color: #666; font-weight: 500;">Share your results:</p>
+                <a href="#" class="social-btn twitter" id="twitter-share" target="_blank">🐦 Twitter</a>
+                <a href="#" class="social-btn facebook" id="facebook-share" target="_blank">👍 Facebook</a>
+                <a href="#" class="social-btn whatsapp" id="whatsapp-share" target="_blank">💬 WhatsApp</a>
             </div>
 
             <div id="emotion-chart"></div>
+
+            <a href="outfit-builder.html" class="cta-button">
+                👔 Continue to Outfit Builder →
+            </a>
         </div>
     </div>
 
@@ -290,14 +612,17 @@
             question.options.forEach((option, index) => {
                 const optionDiv = document.createElement('div');
                 optionDiv.className = 'option';
-                if (answers[currentQuestion] === index) optionDiv.classList.add('selected');
-                optionDiv.textContent = option.text;
+                if (answers[currentQuestion] === index) {
+                    optionDiv.classList.add('selected');
+                }
+                optionDiv.innerHTML = `<div class="option-text">${option.text}</div>`;
                 optionDiv.onclick = () => selectOption(index);
                 optionsContainer.appendChild(optionDiv);
             });
 
             document.getElementById('prev-btn').disabled = currentQuestion === 0;
-            document.getElementById('next-btn').textContent = currentQuestion === questions.length - 1 ? 'See Results ✨' : 'Next →';
+            document.getElementById('next-btn').textContent = 
+                currentQuestion === questions.length - 1 ? 'See Results ✨' : 'Next →';
         }
 
         function selectOption(index) {
@@ -328,6 +653,7 @@
             Object.keys(answers).forEach(questionIndex => {
                 const question = questions[questionIndex];
                 const selectedOption = question.options[answers[questionIndex]];
+                
                 Object.keys(selectedOption.scores).forEach(dimension => {
                     scores[dimension] += selectedOption.scores[dimension];
                 });
@@ -339,7 +665,13 @@
             });
 
             const code = generateCode();
-            localStorage.setItem('fabioraProfile', JSON.stringify({ code, scores, completedAt: new Date().toISOString() }));
+            
+            localStorage.setItem('fabioraProfile', JSON.stringify({
+                code,
+                scores,
+                completedAt: new Date().toISOString()
+            }));
+
             showResults(code);
         }
 
@@ -368,21 +700,43 @@
             ];
 
             const chartContainer = document.getElementById('emotion-chart');
-            dimensions.forEach(dimension => {
-                const score = scores[dimension.key];
-                const row = document.createElement('div');
-                row.className = 'emotion-row';
-                row.innerHTML = `
-                    <div class="emotion-label">
-                        <span>${dimension.name}</span>
-                        <span>${score}/100</span>
-                    </div>
-                    <div class="emotion-bar">
-                        <div class="emotion-bar-fill" style="width: ${score}%">${score}</div>
-                    </div>
-                `;
-                chartContainer.appendChild(row);
-            });
+            setTimeout(() => {
+                dimensions.forEach(dimension => {
+                    const score = scores[dimension.key];
+                    const row = document.createElement('div');
+                    row.className = 'emotion-row';
+                    row.innerHTML = `
+                        <div class="emotion-label">
+                            <span>${dimension.name}</span>
+                            <span>${score}/100</span>
+                        </div>
+                        <div class="emotion-bar">
+                            <div class="emotion-bar-fill" style="width: 0%">${score}</div>
+                        </div>
+                    `;
+                    chartContainer.appendChild(row);
+                    
+                    setTimeout(() => {
+                        row.querySelector('.emotion-bar-fill').style.width = score + '%';
+                    }, 100);
+                });
+            }, 300);
+
+            setupSocialSharing(code);
+        }
+
+        function setupSocialSharing(code) {
+            const url = window.location.href;
+            const text = `I just discovered my Fabiora emotion profile! My code is ${code}. Take the quiz to find yours!`;
+            
+            document.getElementById('twitter-share').href = 
+                `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+            
+            document.getElementById('facebook-share').href = 
+                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+            
+            document.getElementById('whatsapp-share').href = 
+                `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
         }
 
         function copyCode() {
@@ -390,6 +744,21 @@
             navigator.clipboard.writeText(code).then(() => {
                 alert('✅ Code copied to clipboard!');
             });
+        }
+
+        function shareResults() {
+            const code = document.getElementById('emotion-code').textContent;
+            const text = `I just discovered my Fabiora emotion profile! My code is ${code}.`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Fabiora Profile',
+                    text: text,
+                    url: window.location.href
+                });
+            } else {
+                copyCode();
+            }
         }
 
         renderQuestion();
